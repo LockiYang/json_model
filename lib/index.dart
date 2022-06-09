@@ -49,11 +49,11 @@ void run(List<String> args) {
 }
 
 bool generateModelClass(
-    String srcDir,
-    String distDir,
-    String tag, {
-      required bool nullable,
-    }) {
+  String srcDir,
+  String distDir,
+  String tag, {
+  required bool nullable,
+}) {
   const metaTag = "@meta";
   if (srcDir.endsWith("/")) srcDir = srcDir.substring(0, srcDir.length - 1);
   if (distDir.endsWith("/")) distDir = distDir.substring(0, distDir.length - 1);
@@ -101,7 +101,15 @@ bool generateModelClass(
       //generated class name
       String? className = meta['className'] as String?;
       if (className == null || className.isEmpty) {
-        className = fileName[0].toUpperCase() + fileName.substring(1);
+        if (fileName.contains('_')) {
+          String target = '';
+          fileName.split('_').forEach((item) {
+            target += item[0].toUpperCase() + item.substring(1);
+          });
+          className = target;
+        } else {
+          className = fileName[0].toUpperCase() + fileName.substring(1);
+        }
       }
 
       //set ignore
@@ -129,7 +137,7 @@ bool generateModelClass(
         if (key.startsWith("_")) return;
         if (key.startsWith("@")) {
           if (comments[v] != null) {
-            _writeComments(comments[v],fields);
+            _writeComments(comments[v], fields);
           }
           fields.write(key);
           fields.write(" ");
@@ -145,7 +153,7 @@ bool generateModelClass(
               !notNull && (optionalField || _nullable);
 
           if (comments[key] != null) {
-            _writeComments(comments[key],fields);
+            _writeComments(comments[key], fields);
           }
           if (!shouldAppendOptionalFlag) {
             fields.write('late ');
@@ -192,8 +200,8 @@ bool generateModelClass(
   return indexFile.isNotEmpty;
 }
 
-_writeComments(dynamic comments,StringBuffer sb){
-  final arr='$comments'.replaceAll('\r', '').split('\n');
+_writeComments(dynamic comments, StringBuffer sb) {
+  final arr = '$comments'.replaceAll('\r', '').split('\n');
   arr.forEach((element) {
     sb.writeln('// $element');
     sb.write('  ');

@@ -101,7 +101,15 @@ bool generateModelClass(
       //generated class name
       String? className = meta['className'] as String?;
       if (className == null || className.isEmpty) {
-        className = fileName[0].toUpperCase() + fileName.substring(1);
+        if (fileName.contains('_')) {
+          String target = '';
+          fileName.split('_').forEach((item) {
+            target += item[0].toUpperCase() + item.substring(1);
+          });
+          className = target;
+        } else {
+          className = fileName[0].toUpperCase() + fileName.substring(1);
+        }
       }
 
       //set ignore
